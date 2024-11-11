@@ -44,7 +44,7 @@ jobs:
         uses: cypress-io/github-action@v6
         with:
           
-	  command: "cypress run --spec cypress/e2e/eve_test.cy.js"          
+	  command: "cypress run --spec eve_test.cy.js"          
           browser: chrome
 
       - name: Run Newman Tests
