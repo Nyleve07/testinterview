@@ -7,20 +7,14 @@ on:
   pull_request:
     branches:
       - main
-  workflow_dispatch:
+  workflow_dispatch: # Allows manual triggering of the workflow
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
-    services:
-      docker:
-        image: postman/newman:latest
-        options:
-          -p 8080:8080
-
     steps:
-      - name: Checkout
+      - name: Checkout code
         uses: actions/checkout@v4
 
       - name: Set up Node.js
@@ -28,32 +22,21 @@ jobs:
         with:
           node-version: '14'
 
-      - name: Install Dependencies
+      - name: Install dependencies
         run: npm install
 
-      - name: Start Docker Container
-        run: docker run -d -p 8080:8080 postman/newman:latest
+      - name: Run Cypress tests
+        run: npx cypress run --spec eve_test.cy.js
 
-      - name: Wait for Docker to be ready
+      - name: Run Newman tests
         run: |
-          while ! nc -z localhost 8080; do
-            sleep 1
-          done
-
-      - name: Run Cypress Tests
-        uses: cypress-io/github-action@v6
-        with:
-	  run: npx cypress run --spec cypress/e2e/eve_test.cy.js	            
-          browser: chrome
-
-      - name: Run Newman Tests
-        run: |
-          docker run --name postman -d postman/newman:latest
-          docker exec -it postman /bin/bash -c "newman run API_Tests.postman_collection copy.json"
+          npm install -g newman
+          newman run API_Tests.postman_collection copy.json
 
       - name: Upload Test Results
         uses: actions/upload-artifact@v4
         with:
           name: test-results
           path: cypress/results
+
 
