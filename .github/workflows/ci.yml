@@ -1,0 +1,59 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    services:
+      docker:
+        image: postman/newman:latest
+        options:
+          -p 8080:8080
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Start Docker Container
+        run: docker run -d -p 8080:8080 postman/newman:latest
+
+      - name: Wait for Docker to be ready
+        run: |
+          while ! nc -z localhost 8080; do
+            sleep 1
+          done
+
+      - name: Run Cypress Tests
+        uses: cypress-io/github-action@v6
+        with:
+          build: npm run build
+          start: npm start
+          browser: chrome
+
+      - name: Run Newman Tests
+        run: |
+          docker run --name postman -d postman/newman:latest
+          docker exec -it postman /bin/bash -c "newman run /path/to/your_collection.json"
+
+      - name: Upload Test Results
+        uses: actions/upload-artifact@v2
+        with:
+          name: test-results
+          path: cypress/results
+
