@@ -43,7 +43,7 @@ jobs:
       - name: Run Cypress Tests
         uses: cypress-io/github-action@v6
         with:
-	  spec: cypress/e2e/eve_test.cy.js          
+	  run: npx cypress run --spec cypress/e2e/eve_test.cy.js	            
           browser: chrome
 
       - name: Run Newman Tests
