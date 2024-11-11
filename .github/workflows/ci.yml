@@ -32,7 +32,7 @@ jobs:
         run: npm install cypress --save-dev
 
       - name: Run Cypress tests
-        run: npx cypress run --spec eve_test.cy.js
+        run: npx cypress run --spec ./eve_test.cy.js
 
       - name: Run Newman tests
         run: |
