@@ -1,4 +1,4 @@
-# testinterview
+# Test Interview
 
-##Instructions
-Run Workflow from Git Hub Actions tab
+## Instructions
+1. **Run Workflow**: Navigate to the GitHub Actions tab and run the workflow.
