@@ -53,7 +53,7 @@ jobs:
           docker exec -it postman /bin/bash -c "newman run API_Tests.postman_collection copy.json"
 
       - name: Upload Test Results
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: test-results
           path: cypress/results
